@@ -31,6 +31,7 @@
   --dikkat: #A0620A;   --dikkat-zemin: #FBEFD9;
   --kritik: #B83227;   --kritik-zemin: #FBE4E1;
   --bilgi: #44627F;    --bilgi-zemin: #E4ECF4;
+  --yem: #9A7414;      --su: #2F7FB5;       /* grafik serileri (renk korlugu kontrolunden gecti) */
   --golge: 0 1px 2px rgba(23, 32, 26, .06), 0 6px 20px rgba(23, 32, 26, .05);
   --yazi-govde: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --yazi-baslik: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif-condensed, sans-serif;
@@ -51,6 +52,7 @@
     --dikkat: #E7AE4F;   --dikkat-zemin: #33270F;
     --kritik: #F0806F;   --kritik-zemin: #3A1A16;
     --bilgi: #8DB0D4;    --bilgi-zemin: #18263A;
+    --yem: #B08C2A;      --su: #4592C9;
     --golge: 0 1px 2px rgba(0, 0, 0, .4);
   }
 }
@@ -68,6 +70,7 @@
   --dikkat: #E7AE4F;   --dikkat-zemin: #33270F;
   --kritik: #F0806F;   --kritik-zemin: #3A1A16;
   --bilgi: #8DB0D4;    --bilgi-zemin: #18263A;
+  --yem: #B08C2A;      --su: #4592C9;
   --golge: 0 1px 2px rgba(0, 0, 0, .4);
 }
 
@@ -194,6 +197,23 @@ button { cursor: pointer; }
   font-size: .9rem;
 }
 .serit.hata { background: var(--kritik-zemin); color: var(--kritik); }
+.serit.bilgi { background: var(--bilgi-zemin); color: var(--bilgi); }
+.rfid-liste { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.rfid {
+  font: 600 .8rem ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  padding: 2px 8px; border-radius: 6px;
+  background: var(--yuzey); color: var(--murekkep); border: 1px solid var(--cizgi);
+}
+.nokta { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.nokta.yem { background: var(--yem); }
+.nokta.su { background: var(--su); }
+.ist-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-width: 5.4rem; padding: 4px 8px;
+  border: 1px solid var(--cizgi); border-radius: 8px;
+  font-size: .8rem; font-weight: 600; background: var(--yuzey2);
+}
+div.satir:hover { background: transparent; }
 
 /* ---------- Rozetler ---------- */
 .rozet {
@@ -302,7 +322,10 @@ button { cursor: pointer; }
 .olcu-etiket { font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--soluk); }
 .olcu-deger { font-family: var(--yazi-baslik); font-weight: 700; font-size: 1.5rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .olcu-not { font-size: .78rem; color: var(--soluk); }
-@media (max-width: 520px) { .olcu-izgara { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .olcu-izgara { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .olcu:last-child:nth-child(odd) { grid-column: span 2; }   /* tek kalan kutu bos delik birakmasin */
+}
 
 .grafik-kart {
   background: var(--yuzey);
@@ -328,6 +351,12 @@ button { cursor: pointer; }
 .lejant span { display: inline-flex; align-items: center; gap: 6px; }
 .lejant i { display: inline-block; width: 16px; height: 0; border-top: 2px solid; }
 .lejant i.kesik { border-top-style: dashed; }
+.lejant i.nokta { width: 10px; height: 10px; border: 0; }
+.gunluk-izgara { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 560px) { .gunluk-izgara { grid-template-columns: 1fr; } }
+.gunluk-baslik { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem; margin-bottom: 4px; }
+.gunluk-baslik .soluk { font-weight: 400; font-size: .8rem; }
+.gunluk svg { display: block; width: 100%; height: auto; }
 
 /* SVG grafik parcalari */
 .g-izgara { stroke: var(--cizgi); stroke-width: 1; }
@@ -343,6 +372,10 @@ button { cursor: pointer; }
 .g-isaret.dikkat { fill: var(--dikkat); stroke: var(--dikkat); }
 .g-isaret.bilgi { fill: var(--bilgi); stroke: var(--bilgi); }
 .g-bar { fill: var(--soluk); fill-opacity: .45; }
+.g-yem { fill: var(--yem); }
+.g-su { fill: var(--su); }
+.g-bugun { fill-opacity: .55; }
+.g-serit { fill: var(--yuzey2); }
 .k-cizgi { fill: none; stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; }
 .k-cizgi.iyi { stroke: var(--iyi); } .k-cizgi.dikkat { stroke: var(--dikkat); }
 .k-cizgi.kritik { stroke: var(--kritik); } .k-cizgi.bilgi { stroke: var(--bilgi); }
@@ -448,6 +481,15 @@ button { cursor: pointer; }
         </div>
         <div id="suru-kap"></div>
       </section>
+
+      <section class="bolum" id="istasyon-bolum" aria-labelledby="istasyon-baslik" hidden>
+        <div class="bolum-baslik">
+          <h2 id="istasyon-baslik">Yemlik ve suluk istasyonları</h2>
+          <span class="sayac sayi" id="istasyon-sayac">0</span>
+        </div>
+        <div id="istasyon-kap"></div>
+        <div id="tanimsiz-kap"></div>
+      </section>
     </div>
 
     <!-- Detay gorunumu -->
@@ -476,11 +518,29 @@ button { cursor: pointer; }
         </div>
         <div class="grafik" id="grafik-sicaklik"></div>
         <div class="aktivite" id="grafik-aktivite"></div>
+        <div class="aktivite" id="grafik-ziyaret"></div>
         <div class="lejant">
           <span><i style="border-color: var(--vurgu)"></i>Kulak sıcaklığı</span>
           <span><i class="kesik" style="border-color: var(--kritik)"></i>Ateş eşiği</span>
           <span id="lejant-normal"><i class="kesik" style="border-color: var(--soluk)"></i>Bu saatlerdeki normali</span>
           <span><i style="border-color: var(--soluk); opacity:.45; border-top-width:6px"></i>Aktivite</span>
+          <span id="lejant-yem" hidden><i class="nokta yem"></i>Yemlikte</span>
+          <span id="lejant-su" hidden><i class="nokta su"></i>Sulukta</span>
+        </div>
+      </div>
+
+      <div class="grafik-kart" id="gunluk-kart" hidden>
+        <div class="grafik-ust">
+          <h3>Günlük yemlik ve suluk süresi</h3>
+          <span class="soluk" style="font-size:.8rem">son 7 gün</span>
+        </div>
+        <div class="gunluk-izgara">
+          <div class="gunluk" id="gunluk-yem"></div>
+          <div class="gunluk" id="gunluk-su"></div>
+        </div>
+        <div class="lejant">
+          <span><i class="kesik" style="border-color: var(--soluk)"></i>Dananın normali</span>
+          <span>Soluk çubuk: bugün, şu ana kadar</span>
         </div>
       </div>
 
@@ -538,21 +598,41 @@ function onceMetni(zaman) {
   return Math.floor(fark / 86400) + ' gün önce';
 }
 
+// Sureyi okunur yazar (sunucudaki sure_metni ile ayni): 45 sn / 12 dk / 3 sa / 3 sa 5 dk
+function sureMetni(sn) {
+  if (sn == null || Number.isNaN(Number(sn))) return '–';
+  sn = Number(sn);
+  if (sn < 60) return Math.floor(sn) + ' sn';
+  if (sn < 3600) return Math.floor(sn / 60) + ' dk';
+  const sa = Math.floor(sn / 3600), dk = Math.floor((sn % 3600) / 60);
+  return dk ? sa + ' sa ' + dk + ' dk' : sa + ' sa';
+}
+const yuzde = oran => oran == null ? '–' : '%' + Math.round(Number(oran) * 100);
+
 const UYARI_TIPLERI = {
   ates:         { ad: 'Ateş şüphesi',  kod: 'kritik' },
+  istahsizlik:  { ad: 'İştahsızlık',   kod: 'dikkat' },
+  az_su:        { ad: 'Az su içiyor',  kod: 'dikkat' },
   kupe_kontrol: { ad: 'Küpe kontrolü', kod: 'dikkat' },
   cihaz_sessiz: { ad: 'Cihaz sessiz',  kod: 'bilgi' },
   test:         { ad: 'Test',          kod: 'bilgi' },
 };
 const uyariTipi = tip => UYARI_TIPLERI[tip] || { ad: tip, kod: 'bilgi' };
+// Uyarinin seviyesi ACIL ise (ates + istahsizlik gibi) her zaman kirmizi gosterilir
+function uyariGorunum(u) {
+  const t = uyariTipi(u.tip);
+  return u.seviye === 'acil' ? { ad: 'ACİL · ' + t.ad, kod: 'kritik' } : t;
+}
 const ONEM = { kritik: 0, dikkat: 1, bilgi: 2, iyi: 3 };
 
 function hayvanDurumu(h) {
   const tipler = h.acik_uyarilar || [];
   const sonZaman = h.son && h.son.zaman ? new Date(h.son.zaman).getTime() : null;
   const eski = !sonZaman || (Date.now() - sonZaman) > 2 * 3600 * 1000;
-  if (tipler.includes('ates')) return { kod: 'kritik', metin: 'Ateş şüphesi' };
+  const yemSorunu = tipler.includes('istahsizlik') ? 'iştahsız' : tipler.includes('az_su') ? 'az su içiyor' : null;
+  if (tipler.includes('ates')) return { kod: 'kritik', metin: yemSorunu ? 'Ateş + ' + yemSorunu : 'Ateş şüphesi' };
   if (tipler.includes('kupe_kontrol')) return { kod: 'dikkat', metin: 'Küpe kontrolü' };
+  if (yemSorunu) return { kod: 'dikkat', metin: yemSorunu[0].toLocaleUpperCase('tr-TR') + yemSorunu.slice(1) };
   if (eski || tipler.includes('cihaz_sessiz')) return { kod: 'bilgi', metin: 'Veri gelmiyor' };
   if (h.son30_ortanca != null && h.esik != null && Number(h.son30_ortanca) >= Number(h.esik) - 0.3) {
     return { kod: 'dikkat', metin: 'Sınırda' };
@@ -766,7 +846,7 @@ function paneliCiz() {
   // Uyarilar
   const uyarilar = o.uyarilar || [];
   $('#uyari-sayac').textContent = uyarilar.length;
-  $('#uyari-sayac').classList.toggle('var', uyarilar.some(u => uyariTipi(u.tip).kod === 'kritik'));
+  $('#uyari-sayac').classList.toggle('var', uyarilar.some(u => uyariGorunum(u).kod === 'kritik'));
   uyarilariCiz($('#uyari-liste'), uyarilar, true);
 
   // Suru
@@ -779,17 +859,57 @@ function paneliCiz() {
     $('#suru-kap').replaceChildren(el('div', { class: 'suru' }, hayvanlar.map(({ h, d }) => suruSatiri(h, d))));
   }
 
+  istasyonlariCiz(o);
   if (durum.seciliHayvan) detayBasliginiCiz();
+}
+
+// Istasyon 5 dakikada bir haber verir (bos olsa bile). 15 dk gecikme dikkat,
+// 2 saat sessizlik "sessiz" sayilir (sunucudaki cihaz sessiz uyarisiyla ayni sure).
+function istasyonDurumu(s) {
+  if (!s.son_gorulme) return { kod: 'bilgi', metin: 'Hiç bağlanmadı' };
+  const fark = Date.now() - new Date(s.son_gorulme).getTime();
+  if (fark > 2 * 3600 * 1000) return { kod: 'bilgi', metin: 'Sessiz' };
+  if (fark > 15 * 60 * 1000) return { kod: 'dikkat', metin: 'Gecikiyor' };
+  return { kod: 'iyi', metin: 'Çalışıyor' };
+}
+
+function istasyonlariCiz(o) {
+  const istasyonlar = o.istasyonlar || [];
+  const tanimsiz = o.tanimsiz || [];
+  $('#istasyon-bolum').hidden = !istasyonlar.length && !tanimsiz.length;
+  $('#istasyon-sayac').textContent = istasyonlar.length;
+  $('#istasyon-kap').replaceChildren(istasyonlar.length
+    ? el('div', { class: 'suru' }, istasyonlar.map(s => {
+        const yem = s.tur === 'yemlik';
+        return el('div', { class: 'satir' },
+          el('span', { class: 'ist-chip' }, el('i', { class: 'nokta ' + (yem ? 'yem' : 'su') }), yem ? 'Yemlik' : 'Suluk'),
+          el('span', {},
+            el('span', { class: 'satir-ad' }, s.kod),
+            el('span', { class: 'satir-meta' }, onceMetni(s.son_gorulme)
+              + (s.sinyal != null ? ' · ' + s.sinyal + ' dBm' : ''))),
+          el('span', { class: 'satir-kivilcim' }),
+          el('span', { class: 'satir-sag' }, rozet(istasyonDurumu(s))));
+      }))
+    : el('div', { class: 'bos' }, 'Kayıtlı istasyon yok.'));
+
+  $('#tanimsiz-kap').replaceChildren(...(tanimsiz.length ? [
+    el('div', { class: 'serit bilgi' },
+      el('strong', {}, 'Kaydı olmayan küpe okundu. '),
+      'Yeni gelen bir dana olabilir. Bu numarayı bir danaya tanımlayınca geçmiş ziyaretleri de ona bağlanır.',
+      el('div', { class: 'rfid-liste' }, tanimsiz.map(t =>
+        el('span', { class: 'rfid' }, t.rfid + ' · ' + t.adet + ' ziyaret · ' + onceMetni(t.son)))))] : []));
 }
 
 function suruSatiri(h, d) {
   const sicak = h.son30_ortanca != null ? h.son30_ortanca : (h.son ? h.son.sicaklik : null);
   const pil = h.cihaz && h.cihaz.pil != null ? ' · ' + sayiBicim.format(h.cihaz.pil) + ' V' : '';
+  const yem = h.yem ? ' · yem ' + (h.yem.oran != null ? yuzde(h.yem.oran) : sureMetni(h.yem.son24_sn)) : '';
   return el('button', { class: 'satir', type: 'button', onclick: () => detayAc(h.id) },
     el('span', { class: 'kupe' }, h.kupe_no),
     el('span', {},
       el('span', { class: 'satir-ad' }, h.ad || h.kupe_no),
-      el('span', { class: 'satir-meta' }, onceMetni(h.son && h.son.zaman) + pil)),
+      el('span', { class: 'satir-meta', title: 'yem: son 24 saatte yemlikte geçen süre, dananın normaline oranla' },
+        onceMetni(h.son && h.son.zaman) + yem + pil)),
     el('span', { class: 'satir-kivilcim' }, kivilcim(h.seri24 || [], h.esik, d.kod)),
     el('span', { class: 'satir-sag' },
       el('span', { class: 'sicaklik' }, sayi1(sicak), el('small', {}, '°C')),
@@ -805,7 +925,7 @@ function uyarilariCiz(kap, uyarilar, danayaGitGoster) {
 }
 
 function uyariKarti(u, danayaGitGoster) {
-  const t = uyariTipi(u.tip);
+  const t = uyariGorunum(u);
   const kart = el('article', { class: 'uyari ' + t.kod },
     el('div', { class: 'uyari-ust' },
       el('div', { class: 'uyari-kim' },
@@ -880,6 +1000,8 @@ async function detayAc(hayvanId) {
   detayBasliginiCiz();
   $('#grafik-sicaklik').replaceChildren(el('div', { class: 'bos' }, 'Grafik yükleniyor…'));
   $('#grafik-aktivite').replaceChildren();
+  $('#grafik-ziyaret').replaceChildren();
+  $('#gunluk-kart').hidden = true;
   await seriYukle();
 }
 
@@ -913,6 +1035,22 @@ function detayBasliginiCiz() {
     olcu('Ortam', h.son && h.son.ortam != null ? sayi1(h.son.ortam) + ' °C' : '–', 'küpedeki sensörden'),
     olcu('Küpe pili', h.cihaz && h.cihaz.pil != null ? sayiBicim.format(h.cihaz.pil) + ' V' : '–',
       h.cihaz && h.cihaz.sinyal != null ? 'sinyal ' + h.cihaz.sinyal + ' dBm' : null));
+
+  // Yemlik / suluk (ciftlikte istasyon varsa)
+  const istasyonlar = durum.ozet.istasyonlar || [];
+  if (istasyonlar.length) {
+    const yemOlcu = (etiket, v, istasyonAdi) => {
+      if (!v) return olcu(etiket, '–', istasyonAdi + ' istasyonu yok');
+      return olcu(etiket, sureMetni(v.son24_sn), v.kaynak === 'normal'
+        ? 'normali ' + sureMetni(v.normal_sn) + ' · ' + yuzde(v.oran)
+        : 'normal için en az 3 günlük veri gerekli');
+    };
+    const enGec = istasyonlar.reduce((a, s) => (!a || !s.son_gorulme || (a.son_gorulme && s.son_gorulme < a.son_gorulme)) ? s : a, null);
+    $('#detay-olculer').append(
+      yemOlcu('Yem · son 24 sa', h.yem, 'Yemlik'),
+      yemOlcu('Su · son 24 sa', h.su, 'Suluk'),
+      olcu('İstasyon haberi', onceMetni(enGec.son_gorulme), istasyonlar.map(s => s.kod).join(', ')));
+  }
 
   $('#lejant-normal').hidden = !kisisel;
   uyarilariCiz($('#detay-uyari-liste'), (durum.ozet.uyarilar || []).filter(u => u.hayvan_id === h.id), false);
@@ -957,6 +1095,16 @@ function grafikleriCiz() {
   const kap = $('#grafik-sicaklik');
   const akKap = $('#grafik-aktivite');
   if (!seri) return;
+
+  // Ziyaret seridi sicaklik grafigiyle ayni zaman olcegini kullanir
+  {
+    const W = Math.max(280, Math.floor(kap.clientWidth || 600));
+    const sol = 40, sag = 10;
+    const bitis = Date.now(), baslangic = bitis - seri.saat * 3600 * 1000;
+    const x = t => sol + (t - baslangic) / (bitis - baslangic) * (W - sol - sag);
+    ziyaretleriCiz(seri, { W, sol, sag, x, baslangic, bitis });
+    gunlukCiz(seri);
+  }
 
   const noktalar = (seri.noktalar || []).map(p => ({
     t: new Date(p[0]).getTime(), v: p[1] == null ? null : Number(p[1]), akt: p[3] == null ? null : Number(p[3]),
@@ -1045,10 +1193,10 @@ function grafikleriCiz() {
   for (const u of seri.uyarilar || []) {
     const t = new Date(u.zaman).getTime();
     if (t < baslangic) continue;
-    const kod = uyariTipi(u.tip).kod;
-    kok.append(svg('line', { class: 'g-isaret-cizgi g-isaret ' + kod, x1: x(t), x2: x(t), y1: ust, y2: taban }));
-    kok.append(svg('circle', { class: 'g-isaret ' + kod, cx: x(t), cy: ust - 6, r: 4 },
-      svg('title', {}, uyariTipi(u.tip).ad + ' · ' + saatBicim.format(new Date(t)))));
+    const g = uyariGorunum(u);
+    kok.append(svg('line', { class: 'g-isaret-cizgi g-isaret ' + g.kod, x1: x(t), x2: x(t), y1: ust, y2: taban }));
+    kok.append(svg('circle', { class: 'g-isaret ' + g.kod, cx: x(t), cy: ust - 6, r: 4 },
+      svg('title', {}, g.ad + ' · ' + saatBicim.format(new Date(t)))));
   }
 
   // Son nokta vurgusu
@@ -1071,6 +1219,109 @@ function grafikleriCiz() {
     akSvg.append(svg('rect', { class: 'g-bar', x: x(p.t), y: AH - 1 - h, width: kovaGenislik, height: h }));
   }
   akKap.replaceChildren(akSvg);
+}
+
+// Yemlik / suluk ziyaretleri: her istasyon turu icin bir serit, her ziyaret bir dikdortgen
+function ziyaretleriCiz(seri, { W, sol, sag, x, baslangic, bitis }) {
+  const kap = $('#grafik-ziyaret');
+  const turler = seri.istasyon_turleri || [];
+  $('#lejant-yem').hidden = !turler.includes('yemlik');
+  $('#lejant-su').hidden = !turler.includes('suluk');
+  const seritler = ['yemlik', 'suluk'].filter(t => turler.includes(t));
+  if (!seritler.length) { kap.replaceChildren(); return; }
+
+  const SH = 16, ara = 6, ust = 6;
+  const H = ust + seritler.length * (SH + ara);
+  const kok = svg('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img',
+    'aria-label': 'Son ' + seri.saat + ' saatte yemlik ve suluk ziyaretleri' });
+  const ziyaretler = seri.ziyaretler || [];
+  seritler.forEach((tur, i) => {
+    const y = ust + i * (SH + ara);
+    const yem = tur === 'yemlik';
+    const buTur = ziyaretler.filter(z => z[2] === tur);
+    kok.append(svg('rect', { class: 'g-serit', x: sol, y, width: W - sol - sag, height: SH, rx: 4 }));
+    kok.append(svg('text', { class: 'g-etiket', x: sol - 6, y: y + SH - 4, 'text-anchor': 'end' }, yem ? 'yem' : 'su'));
+    for (const z of buTur) {
+      const g = Math.max(baslangic, new Date(z[0]).getTime());
+      const c = Math.min(bitis, new Date(z[1]).getTime());
+      if (c < baslangic || g > bitis) continue;
+      const x1 = x(g);
+      kok.append(svg('rect', { class: yem ? 'g-yem' : 'g-su', x: x1, y: y + 2, width: Math.max(2, x(c) - x1), height: SH - 4, rx: 2 },
+        svg('title', {}, (yem ? 'Yemlik' : 'Suluk') + ' · ' + saatBicim.format(new Date(z[0])) + '–'
+          + saatBicim.format(new Date(z[1])) + ' · ' + sureMetni((new Date(z[1]) - new Date(z[0])) / 1000))));
+    }
+    if (!buTur.length) {
+      kok.append(svg('text', { class: 'g-etiket', x: sol + 8, y: y + SH - 4 }, 'bu aralıkta ziyaret yok'));
+    }
+  });
+  kap.replaceChildren(kok);
+}
+
+// Son 7 takvim gununun toplam yemlik ve suluk suresi (iki ayri grafik: olcekleri farkli)
+function gunlukCiz(seri) {
+  const turler = seri.istasyon_turleri || [];
+  $('#gunluk-kart').hidden = !turler.length;
+  if (!turler.length) return;
+  const gunler = seri.gunluk || [];
+  $('#gunluk-yem').replaceChildren(...gunlukGrafik(gunler, 1, 'yem', turler.includes('yemlik'), seri.yem));
+  $('#gunluk-su').replaceChildren(...gunlukGrafik(gunler, 2, 'su', turler.includes('suluk'), seri.su));
+}
+
+function guzelAdim(x) {
+  if (!(x > 0)) return 1;
+  const us = Math.pow(10, Math.floor(Math.log10(x)));
+  const k = x / us;
+  return (k <= 1 ? 1 : k <= 2 ? 2 : k <= 5 ? 5 : 10) * us;
+}
+
+const haftaGunu = new Intl.DateTimeFormat('tr-TR', { weekday: 'short' });
+
+function gunlukGrafik(gunler, sira, sinif, istasyonVar, ozet) {
+  const yem = sinif === 'yem';
+  const normal = ozet && ozet.kaynak === 'normal' && ozet.normal_sn != null ? Number(ozet.normal_sn) : null;
+  const baslik = el('div', { class: 'gunluk-baslik' },
+    el('i', { class: 'nokta ' + sinif }), yem ? 'Yemlikte' : 'Sulukta',
+    normal != null ? el('span', { class: 'soluk' }, 'normali ' + sureMetni(normal) + '/gün') : null);
+  if (!istasyonVar) return [baslik, el('div', { class: 'bos' }, (yem ? 'Yemlik' : 'Suluk') + ' istasyonu yok.')];
+
+  const W = 320, H = 150, sol = 40, sag = 6, ust = 10, alt = 22;
+  const degerler = gunler.map(g => Number(g[sira]) || 0);
+  const enBuyuk = Math.max(...degerler, normal || 0, 60);
+  const saatlik = enBuyuk >= 3 * 3600;
+  const birim = saatlik ? 3600 : 60;
+  const adim = Math.max(1, guzelAdim(enBuyuk / birim / 3));
+  const tepe = Math.ceil(enBuyuk / birim / adim) * adim;
+  const taban = H - alt;
+  const y = sn => ust + (1 - sn / (tepe * birim)) * (taban - ust);
+
+  const kok = svg('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+    'aria-label': (yem ? 'Yemlikte' : 'Sulukta') + ' geçen günlük süre, son 7 gün' });
+  for (let v = 0; v <= tepe + 1e-9; v += adim) {
+    kok.append(svg('line', { class: 'g-izgara', x1: sol, x2: W - sag, y1: y(v * birim), y2: y(v * birim) }));
+    kok.append(svg('text', { class: 'g-etiket', x: sol - 6, y: y(v * birim) + 4, 'text-anchor': 'end' },
+      v + (saatlik ? ' sa' : ' dk')));
+  }
+  const bant = (W - sol - sag) / 7;
+  const kalinlik = Math.min(24, bant - 10);
+  degerler.forEach((sn, i) => {
+    const bugun = i === degerler.length - 1;
+    const x0 = sol + bant * i + (bant - kalinlik) / 2;
+    const gunTarihi = new Date(gunler[i][0] + 'T12:00:00');
+    const etiket = bugun ? 'Bugün' : haftaGunu.format(gunTarihi);
+    if (sn > 0) {
+      const tepeY = Math.min(y(sn), taban - 2);
+      const r = Math.min(4, (taban - tepeY) / 2, kalinlik / 2);
+      const d = `M${x0} ${taban} V${tepeY + r} Q${x0} ${tepeY} ${x0 + r} ${tepeY} H${x0 + kalinlik - r} `
+              + `Q${x0 + kalinlik} ${tepeY} ${x0 + kalinlik} ${tepeY + r} V${taban} Z`;
+      kok.append(svg('path', { class: (yem ? 'g-yem' : 'g-su') + (bugun ? ' g-bugun' : ''), d },
+        svg('title', {}, etiket + (bugun ? ' (şu ana kadar)' : '') + ' · ' + sureMetni(sn))));
+    }
+    kok.append(svg('text', { class: 'g-etiket', x: x0 + kalinlik / 2, y: H - 6, 'text-anchor': 'middle' }, etiket));
+  });
+  if (normal != null) {
+    kok.append(svg('line', { class: 'g-normal', x1: sol, x2: W - sag, y1: y(normal), y2: y(normal) }));
+  }
+  return [baslik, kok];
 }
 
 let yenidenBoyut = null;
