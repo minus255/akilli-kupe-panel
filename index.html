@@ -402,6 +402,33 @@ div.satir:hover { background: transparent; }
 }
 .giris label { display: grid; gap: 6px; font-weight: 500; font-size: .9rem; }
 .giris .not { font-size: .85rem; color: var(--soluk); margin: 0; }
+/* ---------- Dana formu ---------- */
+.bolum-baslik .kucuk, .detay-bas .kucuk { min-height: 34px; padding: 4px 12px; font-size: .85rem; }
+.bolum-baslik .kucuk { margin-left: auto; }
+.form-baslik { font-size: 1.9rem; margin-bottom: 16px; }
+.form-kart {
+  display: grid; gap: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: 14px;
+  box-shadow: var(--golge);
+}
+.form-kart h3 { font-size: 1.2rem; }
+.form-kart p { margin: 0; }
+.form-kart label { display: grid; gap: 6px; font-weight: 500; font-size: .9rem; }
+.form-kart .ipucu { font-weight: 400; font-size: .8rem; color: var(--soluk); }
+.form-izgara { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 520px) { .form-izgara { grid-template-columns: 1fr; } }
+select.alan { appearance: auto; }
+textarea.alan { resize: vertical; }
+.form-kart.tehlike { border-color: color-mix(in srgb, var(--kritik) 35%, var(--cizgi)); }
+.dugme.tehlike { color: var(--kritik); border-color: color-mix(in srgb, var(--kritik) 45%, var(--cizgi)); }
+.dugme.tehlike.onay { background: var(--kritik); color: #fff; border-color: var(--kritik); }
+button.rfid { cursor: pointer; }
+button.rfid:hover { border-color: var(--soluk); }
+
 .ayar code {
   font-size: .85rem; padding: 1px 6px; border-radius: 6px;
   background: var(--yuzey2); border: 1px solid var(--cizgi);
@@ -478,6 +505,7 @@ div.satir:hover { background: transparent; }
         <div class="bolum-baslik">
           <h2 id="suru-baslik">Sürü</h2>
           <span class="sayac sayi" id="suru-sayac">0</span>
+          <button class="dugme kucuk" id="dana-ekle" type="button">+ Dana ekle</button>
         </div>
         <div id="suru-kap"></div>
       </section>
@@ -502,6 +530,7 @@ div.satir:hover { background: transparent; }
           <div class="soluk" id="detay-alt"></div>
         </div>
         <span id="detay-rozet"></span>
+        <button class="dugme kucuk" id="duzenle-dugme" type="button">Düzenle</button>
       </div>
 
       <div class="olcu-izgara" id="detay-olculer"></div>
@@ -549,6 +578,60 @@ div.satir:hover { background: transparent; }
           <h2 id="detay-uyari-baslik">Bu dananın açık uyarıları</h2>
         </div>
         <div class="uyari-liste" id="detay-uyari-liste"></div>
+      </section>
+    </div>
+
+    <!-- Dana ekleme / duzenleme -->
+    <div id="gorunum-form" hidden>
+      <button class="dugme geri" id="form-geri" type="button">‹ Vazgeç</button>
+      <h2 class="form-baslik" id="form-baslik">Dana ekle</h2>
+      <form class="form-kart" id="dana-formu" novalidate>
+        <label id="form-secim-alan" hidden>Bu küpe hangi danaya ait?
+          <select class="alan" id="form-secim"></select>
+          <span class="ipucu" id="form-secim-not"></span>
+        </label>
+        <label id="form-ciftlik-alan" hidden>Çiftlik
+          <select class="alan" id="form-ciftlik"></select>
+        </label>
+        <div class="form-izgara">
+          <label>Küpe numarası *
+            <input class="alan" id="form-kupe" maxlength="40" placeholder="Örn. TR-0002" autocomplete="off">
+          </label>
+          <label>Adı
+            <input class="alan" id="form-ad" maxlength="80" placeholder="Örn. Sarıkız" autocomplete="off">
+          </label>
+          <label>RFID numarası
+            <input class="alan" id="form-rfid" maxlength="40" placeholder="Örn. A1B2C3D4" autocomplete="off" spellcheck="false" autocapitalize="characters">
+            <span class="ipucu">Yemlik ve suluk istasyonlarının okuduğu numara</span>
+          </label>
+          <label>Doğum tarihi
+            <input class="alan" id="form-dogum" type="date">
+          </label>
+          <label>Küpe cihazı
+            <select class="alan" id="form-cihaz"></select>
+            <span class="ipucu">Sıcaklık ve hareket ölçen akıllı küpe</span>
+          </label>
+        </div>
+        <label>Notlar
+          <textarea class="alan" id="form-notlar" rows="3" maxlength="2000"></textarea>
+        </label>
+        <div id="form-hata" class="serit hata" hidden></div>
+        <div class="uyari-alt">
+          <button class="dugme ana" id="form-kaydet" type="submit">Kaydet</button>
+          <button class="dugme" id="form-vazgec" type="button">Vazgeç</button>
+        </div>
+      </form>
+
+      <section class="form-kart tehlike" id="form-cikar" hidden>
+        <h3>Sürüden çıkar</h3>
+        <p class="soluk">Satıldı, öldü ya da başka çiftliğe gitti. Dana silinmez, geçmişi saklanır ama panelde artık görünmez. Küpe cihazı ve RFID boşa çıkar, açık uyarıları kapanır.</p>
+        <label>Neden (isteğe bağlı)
+          <input class="alan" id="cikar-neden" maxlength="500" placeholder="Örn. satıldı" autocomplete="off">
+        </label>
+        <div id="cikar-hata" class="serit hata" hidden></div>
+        <div class="uyari-alt">
+          <button class="dugme tehlike" id="cikar-dugme" type="button">Sürüden çıkar</button>
+        </div>
       </section>
     </div>
   </section>
@@ -834,6 +917,7 @@ function paneliCiz() {
   $('#ciftlik-adi').textContent = ciftlikler.length === 1 ? ciftlikler[0].ad : (ciftlikler.length ? ciftlikler.length + ' çiftlik' : 'Akıllı Küpe');
   $('#guncelleme').textContent = saatBicim.format(new Date(o.zaman)) + ' itibarıyla · ' + (oturum && oturum.eposta ? oturum.eposta : '');
 
+  $('#dana-ekle').hidden = !ciftlikler.length;
   if (!ciftlikler.length) {
     $('#uyari-liste').replaceChildren(el('div', { class: 'bos' },
       'Bu hesap henüz bir çiftliğe bağlı değil. Çiftlik sahibinden seni eklemesini iste.'));
@@ -895,9 +979,10 @@ function istasyonlariCiz(o) {
   $('#tanimsiz-kap').replaceChildren(...(tanimsiz.length ? [
     el('div', { class: 'serit bilgi' },
       el('strong', {}, 'Kaydı olmayan küpe okundu. '),
-      'Yeni gelen bir dana olabilir. Bu numarayı bir danaya tanımlayınca geçmiş ziyaretleri de ona bağlanır.',
+      'Yeni gelen bir dana olabilir. Numaraya dokunup bir danaya tanımla; geçmiş ziyaretleri de ona bağlanır.',
       el('div', { class: 'rfid-liste' }, tanimsiz.map(t =>
-        el('span', { class: 'rfid' }, t.rfid + ' · ' + t.adet + ' ziyaret · ' + onceMetni(t.son)))))] : []));
+        el('button', { class: 'rfid', type: 'button', title: 'Bir danaya tanımla', onclick: () => formAc({ rfid: t.rfid }) },
+          t.rfid + ' · ' + t.adet + ' ziyaret · ' + onceMetni(t.son) + ' · Tanımla ›'))))] : []));
 }
 
 function suruSatiri(h, d) {
@@ -991,11 +1076,14 @@ function yenidenCizUyarilar() {
 // =============================================================
 // DETAY
 // =============================================================
+function gorunumGoster(ad) {
+  for (const g of ['ana', 'detay', 'form']) $('#gorunum-' + g).hidden = (g !== ad);
+}
+
 async function detayAc(hayvanId) {
   durum.seciliHayvan = hayvanId;
   durum.seri = null;
-  $('#gorunum-ana').hidden = true;
-  $('#gorunum-detay').hidden = false;
+  gorunumGoster('detay');
   window.scrollTo(0, 0);
   detayBasliginiCiz();
   $('#grafik-sicaklik').replaceChildren(el('div', { class: 'bos' }, 'Grafik yükleniyor…'));
@@ -1008,8 +1096,7 @@ async function detayAc(hayvanId) {
 function detayKapat() {
   durum.seciliHayvan = null;
   durum.seri = null;
-  $('#gorunum-detay').hidden = true;
-  $('#gorunum-ana').hidden = false;
+  if (!formAcik()) gorunumGoster('ana');
 }
 
 function detayBasliginiCiz() {
@@ -1055,6 +1142,171 @@ function detayBasliginiCiz() {
   $('#lejant-normal').hidden = !kisisel;
   uyarilariCiz($('#detay-uyari-liste'), (durum.ozet.uyarilar || []).filter(u => u.hayvan_id === h.id), false);
 }
+
+// =============================================================
+// DANA EKLEME / DUZENLEME
+// =============================================================
+const form = { veri: null, hayvanId: null, rfid: null, donus: null, onay: false };
+const formAcik = () => !$('#gorunum-form').hidden;
+
+function formHata(mesaj, kutu = '#form-hata') {
+  $(kutu).textContent = mesaj || '';
+  $(kutu).hidden = !mesaj;
+}
+
+// formAc()                 -> yeni dana
+// formAc({ hayvanId })     -> danayi duzenle
+// formAc({ rfid })         -> tanimsiz kupeyi yeni ya da mevcut bir danaya tanimla
+async function formAc({ hayvanId = null, rfid = null } = {}) {
+  form.donus = durum.seciliHayvan;
+  form.rfid = rfid;
+  try {
+    form.veri = await rpc('yonetim_ozet');
+  } catch (e) {
+    if (e instanceof OturumYok) { girisEkrani('Oturumun sona erdi, tekrar giriş yap.'); return; }
+    const serit = $('#baglanti-serit');
+    serit.textContent = 'Dana bilgileri alınamadı: ' + (e instanceof TypeError ? 'sunucuya ulaşılamadı.' : e.message);
+    serit.hidden = false;
+    return;
+  }
+  const v = form.veri;
+  if (!v.ciftlikler.length) return;
+
+  $('#form-ciftlik').replaceChildren(...v.ciftlikler.map(c => el('option', { value: c.id }, c.ad)));
+  $('#form-ciftlik-alan').hidden = !!hayvanId || v.ciftlikler.length < 2;
+  $('#form-dogum').max = new Date().toISOString().slice(0, 10);
+
+  $('#form-secim-alan').hidden = !rfid;
+  if (rfid) {
+    $('#form-secim').replaceChildren(
+      el('option', { value: '' }, 'Yeni dana olarak ekle'),
+      ...v.hayvanlar.map(h => el('option', { value: h.id },
+        h.kupe_no + (h.ad ? ' · ' + h.ad : '') + (h.rfid ? ' (şu an RFID: ' + h.rfid + ')' : ' (RFID yok)'))));
+    $('#form-secim').value = '';
+  }
+
+  formHata(null);
+  formHata(null, '#cikar-hata');
+  $('#cikar-neden').value = '';
+  formuDoldur(hayvanId ? v.hayvanlar.find(h => h.id === hayvanId) : null);
+  gorunumGoster('form');
+  window.scrollTo(0, 0);
+  setTimeout(() => $('#form-kupe').focus(), 0);
+}
+
+function formuDoldur(h) {
+  const v = form.veri;
+  form.hayvanId = h ? h.id : null;
+  form.onay = false;
+  $('#cikar-dugme').textContent = 'Sürüden çıkar';
+  $('#cikar-dugme').classList.remove('onay');
+
+  $('#form-baslik').textContent = form.rfid ? form.rfid + ' numarasını tanımla'
+    : h ? (h.ad || h.kupe_no) + ' · düzenle' : 'Dana ekle';
+  $('#form-kupe').value = h ? h.kupe_no : '';
+  $('#form-ad').value = h && h.ad ? h.ad : '';
+  $('#form-rfid').value = form.rfid || (h && h.rfid) || '';
+  $('#form-dogum').value = h && h.dogum_tarihi ? h.dogum_tarihi : '';
+  $('#form-notlar').value = h && h.notlar ? h.notlar : '';
+  $('#form-secim-not').textContent = form.rfid && h && h.rfid && h.rfid !== form.rfid
+    ? 'Bu danadaki eski RFID (' + h.rfid + ') yenisiyle değişecek.' : '';
+
+  const ciftlikId = h ? h.ciftlik_id : $('#form-ciftlik').value;
+  cihazSecenekleri(ciftlikId, h);
+  const rol = (v.ciftlikler.find(c => c.id === ciftlikId) || {}).rol;
+  $('#form-cikar').hidden = !h || form.rfid != null || rol !== 'sahip';
+}
+
+function cihazSecenekleri(ciftlikId, h) {
+  const v = form.veri;
+  const adi = id => { const x = v.hayvanlar.find(a => a.id === id); return x ? (x.ad || x.kupe_no) : 'başka bir dana'; };
+  const cihazlar = v.kupe_cihazlari.filter(c => c.ciftlik_id === ciftlikId);
+  $('#form-cihaz').replaceChildren(
+    el('option', { value: '' }, '— takılı değil —'),
+    ...cihazlar.map(c => el('option', { value: c.kod },
+      c.kod + (c.hayvan_id && (!h || c.hayvan_id !== h.id) ? ' · şu an ' + adi(c.hayvan_id) + ' danasında' : ''))));
+  $('#form-cihaz').value = h && h.kupe_cihazi ? h.kupe_cihazi : '';
+}
+
+function formKapat() {
+  const donus = form.donus;
+  form.veri = null;
+  if (donus && (durum.ozet.hayvanlar || []).some(h => h.id === donus)) {
+    durum.seciliHayvan = donus;
+    gorunumGoster('detay');
+    detayBasliginiCiz();
+  } else {
+    durum.seciliHayvan = null;
+    gorunumGoster('ana');
+  }
+  window.scrollTo(0, 0);
+}
+
+$('#dana-ekle').addEventListener('click', () => formAc());
+$('#duzenle-dugme').addEventListener('click', () => formAc({ hayvanId: durum.seciliHayvan }));
+$('#form-geri').addEventListener('click', formKapat);
+$('#form-vazgec').addEventListener('click', formKapat);
+$('#form-secim').addEventListener('change', () => {
+  const id = $('#form-secim').value;
+  formuDoldur(id ? form.veri.hayvanlar.find(h => h.id === id) : null);
+});
+$('#form-ciftlik').addEventListener('change', () => { if (!form.hayvanId) cihazSecenekleri($('#form-ciftlik').value, null); });
+
+$('#dana-formu').addEventListener('submit', async (olay) => {
+  olay.preventDefault();
+  const kupeNo = $('#form-kupe').value.trim();
+  if (!kupeNo) { formHata('Küpe numarasını yaz.'); $('#form-kupe').focus(); return; }
+  const govde = {
+    kupe_no: kupeNo,
+    ad: $('#form-ad').value,
+    rfid: $('#form-rfid').value,
+    dogum_tarihi: $('#form-dogum').value,
+    notlar: $('#form-notlar').value,
+    kupe_cihazi: $('#form-cihaz').value,
+  };
+  if (form.hayvanId) govde.id = form.hayvanId;
+  else govde.ciftlik_id = $('#form-ciftlik').value;
+
+  const dugme = $('#form-kaydet');
+  dugme.disabled = true;
+  dugme.textContent = 'Kaydediliyor…';
+  try {
+    const id = await rpc('hayvan_kaydet', { p_veri: govde });
+    form.veri = null;
+    await yenile();
+    await detayAc(id);
+  } catch (e) {
+    if (e instanceof OturumYok) { girisEkrani('Oturumun sona erdi, tekrar giriş yap.'); return; }
+    formHata(e instanceof TypeError ? 'Sunucuya ulaşılamadı. İnternet bağlantını kontrol et.' : e.message);
+  } finally {
+    dugme.disabled = false;
+    dugme.textContent = 'Kaydet';
+  }
+});
+
+$('#cikar-dugme').addEventListener('click', async () => {
+  const dugme = $('#cikar-dugme');
+  if (!form.onay) {
+    form.onay = true;
+    dugme.textContent = 'Eminim, sürüden çıkar';
+    dugme.classList.add('onay');
+    return;
+  }
+  dugme.disabled = true;
+  try {
+    await rpc('hayvan_cikar', { p_hayvan: form.hayvanId, p_neden: $('#cikar-neden').value });
+    form.veri = null;
+    form.donus = null;
+    durum.seciliHayvan = null;
+    gorunumGoster('ana');
+    await yenile();
+  } catch (e) {
+    if (e instanceof OturumYok) { girisEkrani('Oturumun sona erdi, tekrar giriş yap.'); return; }
+    formHata(e instanceof TypeError ? 'Sunucuya ulaşılamadı.' : e.message, '#cikar-hata');
+  } finally {
+    dugme.disabled = false;
+  }
+});
 
 // =============================================================
 // GRAFIKLER (SVG, kutuphane yok)
@@ -1334,7 +1586,7 @@ window.addEventListener('resize', () => {
 // BASLAT
 // =============================================================
 setInterval(() => {
-  if (document.visibilityState === 'visible' && !$('#ekran-panel').hidden && durum.acikCozum == null) yenile();
+  if (document.visibilityState === 'visible' && !$('#ekran-panel').hidden && durum.acikCozum == null && !formAcik()) yenile();
 }, YENILEME_SN * 1000);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && !$('#ekran-panel').hidden) yenile();
